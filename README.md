@@ -1,4 +1,4 @@
-# Secure Multi-Factor Authentication System (Backend)
+# SecureLog: A Secure Multi-Factor Authentication System 
 
 ## Overview
 
