@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureLog | Ultra MFA</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="glass-card">
+            <header>
+                <div class="logo">Secure<span>Log</span></div>
+                <p class="subtitle">Advanced Multi-Factor Authentication</p>
+            </header>
+
+            <div id="auth-container">
+                <!-- Registration Section -->
+                <div id="register-section" class="form-section">
+                    <h2>Register</h2>
+                    <input type="text" id="reg-username" placeholder="Username">
+                    <input type="email" id="reg-email" placeholder="Email Address">
+                    <input type="password" id="reg-password" placeholder="Password">
+                    <button onclick="register()">Create Account</button>
+                    <p class="toggle-text">Already have an account? <span onclick="showLogin()">Login</span></p>
+                </div>
+
+                <!-- Login Section (Step 1: Username) -->
+                <div id="login-step1" class="form-section hidden">
+                    <h2>Login</h2>
+                    <input type="text" id="login-username" placeholder="Username">
+                    <button onclick="getChallenge()">Next</button>
+                    <p class="toggle-text">Need an account? <span onclick="showRegister()">Register</span></p>
+                </div>
+
+                <!-- Login Section (Step 2: Challenge) -->
+                <div id="login-step2" class="form-section hidden">
+                    <h2>Verify Password</h2>
+                    <p class="status-msg">Challenge Received: <span id="challenge-display">...</span></p>
+                    <input type="password" id="login-password" placeholder="Password">
+                    <button onclick="submitResponse()">Verify</button>
+                </div>
+
+                <!-- Login Section (Step 3: OTP) -->
+                <div id="login-otp" class="form-section hidden">
+                    <h2>One-Time Password</h2>
+                    <p class="status-msg">Enter the 6-digit code sent to you</p>
+                    <div class="otp-inputs">
+                        <input type="text" id="otp-code" maxlength="6" placeholder="000000">
+                    </div>
+                    <button onclick="verifyOTP()">Complete Login</button>
+                    <p id="debug-otp-area" class="debug-text"></p>
+                </div>
+
+                <div id="success-section" class="form-section hidden">
+                    <div class="success-icon">✓</div>
+                    <h2>Welcome Back!</h2>
+                    <p>Authentication Successful.</p>
+                    <div class="session-box">
+                        <span class="label">JWT Session Token:</span>
+                        <div id="jwt-token-display" class="token-content"></div>
+                    </div>
+                    <button onclick="reset()">Logout</button>
+                </div>
+            </div>
+
+            <div id="challenge-log-container" class="log-container hidden">
+                <h3>Challenge Log</h3>
+                <div id="challenge-log" class="log-content">
+                    <div class="log-entry">Waiting for interaction...</div>
+                </div>
+            </div>
+
+            <div id="message" class="message"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
