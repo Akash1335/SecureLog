@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SecureLog | Ultra MFA</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <div class="glass-card">
+    <div class="page-wrapper">
+
+        <!-- LEFT PANEL: Auth Forms -->
+        <div class="auth-panel">
             <header>
                 <div class="logo">Secure<span>Log</span></div>
                 <p class="subtitle">Advanced Multi-Factor Authentication</p>
@@ -18,62 +20,140 @@
             <div id="auth-container">
                 <!-- Registration Section -->
                 <div id="register-section" class="form-section">
-                    <h2>Register</h2>
-                    <input type="text" id="reg-username" placeholder="Username">
-                    <input type="email" id="reg-email" placeholder="Email Address">
-                    <input type="password" id="reg-password" placeholder="Password">
+                    <h2>Create Account</h2>
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" id="reg-username" placeholder="your_handle">
+                    </div>
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="reg-email" placeholder="you@domain.com">
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="reg-password" placeholder="••••••••••">
+                    </div>
                     <button onclick="register()">Create Account</button>
                     <p class="toggle-text">Already have an account? <span onclick="showLogin()">Login</span></p>
                 </div>
 
-                <!-- Login Section (Step 1: Username) -->
+                <!-- Login Step 1 -->
                 <div id="login-step1" class="form-section hidden">
-                    <h2>Login</h2>
-                    <input type="text" id="login-username" placeholder="Username">
-                    <button onclick="getChallenge()">Next</button>
+                    <h2>Welcome Back</h2>
+                    <p class="form-desc">Enter your username to begin the authentication handshake.</p>
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" id="login-username" placeholder="your_handle">
+                    </div>
+                    <button onclick="getChallenge()">Request Challenge →</button>
                     <p class="toggle-text">Need an account? <span onclick="showRegister()">Register</span></p>
                 </div>
 
-                <!-- Login Section (Step 2: Challenge) -->
+                <!-- Login Step 2 -->
                 <div id="login-step2" class="form-section hidden">
                     <h2>Verify Password</h2>
-                    <p class="status-msg">Challenge Received: <span id="challenge-display">...</span></p>
-                    <input type="password" id="login-password" placeholder="Password">
-                    <button onclick="submitResponse()">Verify</button>
+                    <p class="form-desc">Challenge received. Enter your password to derive the response key.</p>
+                    <div class="challenge-badge">
+                        <span class="badge-label">Nonce</span>
+                        <span id="challenge-display" class="badge-value">...</span>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" placeholder="••••••••••">
+                    </div>
+                    <button onclick="submitResponse()">Verify &amp; Continue →</button>
                 </div>
 
-                <!-- Login Section (Step 3: OTP) -->
+                <!-- Login Step 3: OTP -->
                 <div id="login-otp" class="form-section hidden">
                     <h2>One-Time Password</h2>
-                    <p class="status-msg">Enter the 6-digit code sent to you</p>
-                    <div class="otp-inputs">
-                        <input type="text" id="otp-code" maxlength="6" placeholder="000000">
+                    <p class="form-desc">A 6-digit code has been dispatched to your registered email.</p>
+                    <div class="input-group otp-group">
+                        <label>OTP Code</label>
+                        <input type="text" id="otp-code" maxlength="6" placeholder="000000" class="otp-input">
                     </div>
-                    <button onclick="verifyOTP()">Complete Login</button>
+                    <button onclick="verifyOTP()">Complete Login →</button>
                     <p id="debug-otp-area" class="debug-text"></p>
                 </div>
 
+                <!-- Success -->
                 <div id="success-section" class="form-section hidden">
                     <div class="success-icon">✓</div>
-                    <h2>Welcome Back!</h2>
-                    <p>Authentication Successful.</p>
+                    <h2>Authenticated</h2>
+                    <p class="form-desc">All factors verified. Session established.</p>
                     <div class="session-box">
-                        <span class="label">JWT Session Token:</span>
+                        <span class="session-label">JWT Session Token</span>
                         <div id="jwt-token-display" class="token-content"></div>
                     </div>
-                    <button onclick="reset()">Logout</button>
-                </div>
-            </div>
-
-            <div id="challenge-log-container" class="log-container hidden">
-                <h3>Challenge Log</h3>
-                <div id="challenge-log" class="log-content">
-                    <div class="log-entry">Waiting for interaction...</div>
+                    <button class="btn-outline" onclick="reset()">End Session</button>
                 </div>
             </div>
 
             <div id="message" class="message"></div>
         </div>
+
+        <!-- RIGHT PANEL: Challenge Log -->
+        <div class="log-panel">
+            <div class="log-panel-inner">
+                <div class="log-header">
+                    <span class="log-title">Challenge Log</span>
+                    <div class="log-header-right">
+                        <div class="info-box-wrapper">
+                            <button class="info-trigger" aria-label="How it works">
+                                <span class="info-icon">?</span>
+                                <span class="info-label">How it works</span>
+                            </button>
+                            <div class="info-popover" role="tooltip">
+                                <div class="info-popover-header">
+                                    <span class="info-popover-title">How SecureLog Works</span>
+                                    <span class="info-popover-badge">3-Factor Auth</span>
+                                </div>
+                                <div class="info-steps">
+                                    <div class="info-step">
+                                        <span class="step-num">1</span>
+                                        <div class="step-body">
+                                            <strong>Register</strong>
+                                            <p>Create an account with your username, email and password. Your password is never stored directly — only a secure hash.</p>
+                                        </div>
+                                    </div>
+                                    <div class="info-step">
+                                        <span class="step-num">2</span>
+                                        <div class="step-body">
+                                            <strong>Challenge Handshake</strong>
+                                            <p>On login, the server sends a one-time nonce. Your browser combines it with your password to produce a unique response key — so your password never travels over the network.</p>
+                                        </div>
+                                    </div>
+                                    <div class="info-step">
+                                        <span class="step-num">3</span>
+                                        <div class="step-body">
+                                            <strong>Email OTP</strong>
+                                            <p>A 6-digit code is sent to your registered email as a second factor. Both factors must pass to grant access.</p>
+                                        </div>
+                                    </div>
+                                    <div class="info-step">
+                                        <span class="step-num">4</span>
+                                        <div class="step-body">
+                                            <strong>Session JWT</strong>
+                                            <p>On success, a signed token is issued for your session. All steps are logged live in this panel.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="log-indicator"><span class="dot"></span> Live</span>
+                    </div>
+                </div>
+                <div id="challenge-log-container" class="log-container">
+                    <div id="challenge-log" class="log-content">
+                        <div class="log-entry idle">
+                            <span class="label">[SYS]</span>
+                            <span class="value">Waiting for interaction...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
     <script src="script.js"></script>
 </body>
