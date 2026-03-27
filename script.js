@@ -13,9 +13,12 @@ function showMsg(text, type = 'success') {
 }
 
 function addLog(label, value) {
-    const logContainer = document.getElementById('challenge-log-container');
-    logContainer.classList.remove('hidden');
+    // Log panel is always visible in the new layout — no toggle needed
     const logDiv = document.getElementById('challenge-log');
+    // Remove the idle placeholder if present
+    const idle = logDiv.querySelector('.log-entry.idle');
+    if (idle) idle.remove();
+
     const entry = document.createElement('div');
     entry.className = 'log-entry';
     entry.innerHTML = `<span class="label">[${label}]</span> <span class="value">${value}</span>`;
